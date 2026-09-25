@@ -38,7 +38,7 @@ members = [
     "examples/stonkfun_via_sol_simulate",
 ]
 [workspace.dependencies]
-sol-parser-sdk = { version = "=0.7.6", git = "https://github.com/realhen/sol-parser-sdk", rev = "5e685c5f86570ec26e668c77417b7b3d5967d1df" }
+sol-parser-sdk = { version = "=0.7.6", git = "https://github.com/realhen/sol-parser-sdk", rev = "3eaa83286c29ba431a31bf143c9fd8a26cc96a07", default-features = false, features = ["parse-borsh"] }
 solana-streamer-sdk = { version = "=3.0.5", git = "https://github.com/realhen/solana-streamer", rev = "2ecd1b85ebfa61328a8ca9d4deb0362ab2eb4259" }
 solana-sdk = "4.0.1"
 solana-commitment-config = { version = "3.1.1", features = ["serde"] }
@@ -49,9 +49,12 @@ crate-type = ["rlib"]
 
 [features]
 default = []
+keyless-venues = ["dep:sol-parser-sdk", "dep:num-bigint"]
 perf-trace = []  # 性能追踪特性，生产环境应禁用以获得最佳性能
 
 [dependencies]
+sol-parser-sdk = { workspace = true, optional = true }
+num-bigint = { version = "=0.4.8", optional = true }
 solana-sdk = { workspace = true }
 solana-client = "4.2.2"
 solana-program = "4.0.0"

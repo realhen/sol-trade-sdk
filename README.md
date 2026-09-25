@@ -3,6 +3,17 @@
     <h3><em>A comprehensive Rust SDK for seamless Solana DEX trading</em></h3>
 </div>
 
+## Cached, keyless venue adapters
+
+Enable the optional `keyless-venues` feature for `sol_trade_sdk::venues`.
+`ValidatedMarket::load` validates a complete caller-supplied account snapshot;
+`build` takes a public wallet address and produces unsigned instructions.
+The module owns supported Pump, Raydium and Meteora protocol decoding, discovery
+recipes and quote/fee math. It takes no RPC client or keypair. Callers retain
+snapshot freshness, market selection, spending policy, signing and submission.
+This does not change the existing high-level trading APIs or approve them for
+custody. See [contracts, supported limits and independent fixture evidence](validation/venues/README.md).
+
 ## Concentrated-liquidity instruction builders
 
 `instruction::{raydium_clmm, whirlpool, meteora_dlmm}` provides zero-RPC

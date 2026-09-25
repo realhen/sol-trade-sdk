@@ -1,0 +1,31 @@
+{
+  "baseline_revision": "3b9840a897f8c879a96c4ee362bdb8d597eec59e",
+  "validation_date": "2026-09-25",
+  "workflow": "cargo test --locked -p sol-trade-sdk --features keyless-venues --test keyless_venues",
+  "result": {
+    "passed_integration_workflows": 2,
+    "official_sdk_swap_comparisons": 82,
+    "rejected_mutations": 22
+  },
+  "source_review": "Fresh read-only review: no actionable findings; five external venue module normalized-token comparison preserved previous arithmetic and validation. Engine freshness, wallet binding and spending policy remain application-owned.",
+  "limits": [
+    "Synthetic account/instruction replay, not Solana VM execution",
+    "No funded wallet or mainnet broadcast",
+    "Dynamic Meteora fees and unsupported modes remain rejected",
+    "No approval of legacy high-level SDK execution APIs"
+  ],
+  "source_sha256": {
+    "Cargo.toml": "6864aad9003c48acad04cb1a92c262069a5bdd033907af676ea5c20d9d5ddace",
+    "src/lib.rs": "5cbf82d9d6610de5ae57c894faea60814c59c9745c3c7b91859030a1048c56d6",
+    "src/venues/amm_v4.rs": "96896f00f89002b5dc1932313c81bd1db7275ac5b33c1c398cbf44bc779c1944",
+    "src/venues/clmm_preview.rs": "c11293473339dcd57584b18243eb3d4ef32b42d8ed55bacdcbeea6eff95f5b93",
+    "src/venues/cpmm.rs": "3acc6223f9cd5ded54d7f875f4f2ba905325cc70e1352765c102a89768a5d1e1",
+    "src/venues/damm_v2.rs": "ac85bf80a1c2861e9afc061635189e7d1266d33f74b928d5cb5925208acb4b49",
+    "src/venues/dbc.rs": "0515399f0da509249cd0a3e191680e51ce27cf24ca5c4105d5b6a7a0927d17e8",
+    "src/venues/external.rs": "c75468e5327b2673fd147aec6b986687ef4e1ab103687c4a6ab6171c4eeedf57",
+    "src/venues/launchlab.rs": "daa1552aaea4db71ccbc532823cb0f3bd73feb52f07f5c6d63f813b3ed5b29d1",
+    "src/venues/mod.rs": "269b1b1536d0dd5bfe1bb8a7fa8a81e532c9903591060ae430300b027cc86000",
+    "src/venues/parser.rs": "c73aa6d32b398847877fba05d1583a124559be176e4fe3a5c901fac5c23bfa9f"
+  },
+  "oracle_sha256": "91e8b57e9a313f8a5036dfa241a9140f9ac8c3f618419f6f63816fd2f1503302"
+}

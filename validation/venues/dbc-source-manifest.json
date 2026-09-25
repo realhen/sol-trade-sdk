@@ -1,0 +1,31 @@
+{
+  "repository": "https://github.com/MeteoraAg/dynamic-bonding-curve-sdk",
+  "commit": "a28b7239e71899eb52ff7aacac4dec90441885c4",
+  "package": "@meteora-ag/dynamic-bonding-curve-sdk",
+  "version": "1.5.13",
+  "license": "MIT",
+  "archive_url": "https://codeload.github.com/MeteoraAg/dynamic-bonding-curve-sdk/tar.gz/a28b7239e71899eb52ff7aacac4dec90441885c4",
+  "archive_sha256": "320d6f6c96b6ac24fcaac050ec44c4757e8f95dec4b9d4c0cf847b307d9fe4a5",
+  "sources": {
+    "LICENSE": "c74e2ec3078823228742dba9f9e9b79ec0fffdb4bcdd79295130cf42b4ed1020",
+    "packages/dynamic-bonding-curve/package.json": "7a61c9d3e6f9d34b88ed19a15de7fa9011557b7ada0972a479f9784d4dba43c8",
+    "packages/dynamic-bonding-curve/src/idl/dynamic-bonding-curve/idl.json": "beedc8c869bc04865c26349a72a3ba9c773e61f48be2d33093c591a015fe82fd",
+    "packages/dynamic-bonding-curve/src/constants.ts": "8971b87e710762cbbd1c2fa858f49737c9cd8bbf9fae0054f10fea4391f0898b",
+    "packages/dynamic-bonding-curve/src/types.ts": "e0ae7f9705f6076fb907d5531b639482b0bc46f9babf9799f6ccc9958e0b66b6",
+    "packages/dynamic-bonding-curve/src/helpers/pda.ts": "a0618d2b0a2ce55a95988acfb7289ad5ac793594cc1f7804489e1058372ea3bc",
+    "packages/dynamic-bonding-curve/src/helpers/validation.ts": "290b268dae4eea7ccf5c7cb12d952a5747fb8630890f3c299045360abdc9c961",
+    "packages/dynamic-bonding-curve/src/services/pool.ts": "8e00913955c7eed783f27c6f8db387f747b99b24cc35b96973d95973d6f8033f",
+    "packages/dynamic-bonding-curve/src/math/swapQuote.ts": "a87411b2f5ec6b6118a98645dd0ab9bcde6f39da612133a8cf4e6345b83900ab",
+    "packages/dynamic-bonding-curve/src/math/curve.ts": "e4f9a746ef7190b71bd6a86a52e1d3a9e214e0bc6568ce45c4119e0aeeb404fc",
+    "packages/dynamic-bonding-curve/src/math/feeMath.ts": "1bc18588881bce66fa6e569f68ef16ae6919bf3ad30b3e0a24536dd2613b9580",
+    "packages/dynamic-bonding-curve/src/math/safeMath.ts": "e515f710027438bbf66871ffaffbb5a04950d77e3ecff01d20e46f437c81f65f",
+    "packages/dynamic-bonding-curve/src/math/utilsMath.ts": "4d1a110de841b1672c0e93aaaabf5cb1e25dd571dedca0afcbadf6f6a43cd642",
+    "packages/dynamic-bonding-curve/src/math/poolFees/baseFee.ts": "e7d194e915d0b81e0a842164729c2305b6c5a981b2370b8e86fc304cca7d6887",
+    "packages/dynamic-bonding-curve/src/math/poolFees/feeScheduler.ts": "798abeb9244d7d747640aa89be0766a39df67ffef2fb0cfff70af40f26e16a22",
+    "packages/dynamic-bonding-curve/src/math/poolFees/rateLimiter.ts": "7d6f3e9aeca7657b9f1525b9fbcf8763882b392425b9a6facdbe5d3311f39673",
+    "packages/dynamic-bonding-curve/src/math/poolFees/dynamicFee.ts": "0ec73e8715a81445e98216ac6537ae98b159d0a84c286a670bd69112ba825552"
+  },
+  "adapter_files": [
+    "src/venues/dbc.rs"
+  ]
+}
