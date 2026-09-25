@@ -18,3 +18,6 @@ pub use client::{
 pub use trading::core::params::{
     StonkFunMemeLeg, StonkFunSolHop, StonkFunViaSolParams, StonkFunParams, StonkFunSwapParams,
 };
+
+#[cfg(feature = "keyless-venues")]
+pub mod venues;

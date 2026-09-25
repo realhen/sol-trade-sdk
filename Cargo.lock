@@ -16,7 +16,7 @@ dependencies = [
 name = "address_lookup"
 version = "0.1.0"
 dependencies = [
- "sol-parser-sdk",
+ "sol-parser-sdk 0.7.6 (git+https://github.com/realhen/sol-parser-sdk?rev=3eaa83286c29ba431a31bf143c9fd8a26cc96a07)",
  "sol-trade-sdk",
  "solana-commitment-config",
  "solana-sdk",
@@ -2728,7 +2728,7 @@ name = "nonce_cache"
 version = "0.1.0"
 dependencies = [
  "anyhow",
- "sol-parser-sdk",
+ "sol-parser-sdk 0.7.6 (git+https://github.com/realhen/sol-parser-sdk?rev=3eaa83286c29ba431a31bf143c9fd8a26cc96a07)",
  "sol-trade-sdk",
  "solana-commitment-config",
  "solana-sdk",
@@ -3319,7 +3319,7 @@ dependencies = [
 name = "pumpfun_copy_trading"
 version = "0.1.0"
 dependencies = [
- "sol-parser-sdk",
+ "sol-parser-sdk 0.7.6 (git+https://github.com/realhen/sol-parser-sdk?rev=3eaa83286c29ba431a31bf143c9fd8a26cc96a07)",
  "sol-trade-sdk",
  "solana-commitment-config",
  "solana-sdk",
@@ -3331,7 +3331,7 @@ name = "pumpfun_sniper_trading"
 version = "0.1.0"
 dependencies = [
  "anyhow",
- "sol-parser-sdk",
+ "sol-parser-sdk 0.7.6 (git+https://github.com/realhen/sol-parser-sdk?rev=3eaa83286c29ba431a31bf143c9fd8a26cc96a07)",
  "sol-trade-sdk",
  "solana-commitment-config",
  "solana-sdk",
@@ -4200,6 +4200,47 @@ dependencies = [
 [[package]]
 name = "sol-parser-sdk"
 version = "0.7.6"
+source = "git+https://github.com/realhen/sol-parser-sdk?rev=3eaa83286c29ba431a31bf143c9fd8a26cc96a07#3eaa83286c29ba431a31bf143c9fd8a26cc96a07"
+dependencies = [
+ "anyhow",
+ "base58-turbo",
+ "base64 0.22.1",
+ "base64-simd",
+ "borsh",
+ "bs58",
+ "chrono",
+ "crossbeam-queue",
+ "futures",
+ "libc",
+ "log",
+ "memchr",
+ "once_cell",
+ "prost 0.14.4",
+ "rayon",
+ "rustls",
+ "serde",
+ "serde-big-array",
+ "smallvec",
+ "solana-client",
+ "solana-entry",
+ "solana-sdk",
+ "solana-transaction-error",
+ "solana-transaction-status",
+ "spl-pod",
+ "spl-token",
+ "spl-token-2022",
+ "tokio",
+ "tonic 0.14.6",
+ "tonic-prost",
+ "wide",
+ "wincode",
+ "yellowstone-grpc-client",
+ "yellowstone-grpc-proto",
+]
+
+[[package]]
+name = "sol-parser-sdk"
+version = "0.7.6"
 source = "git+https://github.com/realhen/sol-parser-sdk?rev=5e685c5f86570ec26e668c77417b7b3d5967d1df#5e685c5f86570ec26e668c77417b7b3d5967d1df"
 dependencies = [
  "anyhow",
@@ -4263,6 +4304,7 @@ dependencies = [
  "libc",
  "lunar-lander-quic-client",
  "memmap2",
+ "num-bigint 0.4.8",
  "num_cpus",
  "once_cell",
  "parking_lot",
@@ -4277,7 +4319,7 @@ dependencies = [
  "serde_json",
  "sha2",
  "smallvec",
- "sol-parser-sdk",
+ "sol-parser-sdk 0.7.6 (git+https://github.com/realhen/sol-parser-sdk?rev=3eaa83286c29ba431a31bf143c9fd8a26cc96a07)",
  "solana-account-decoder",
  "solana-client",
  "solana-commitment-config",
@@ -6085,7 +6127,7 @@ dependencies = [
  "rustls",
  "serde",
  "serde-big-array",
- "sol-parser-sdk",
+ "sol-parser-sdk 0.7.6 (git+https://github.com/realhen/sol-parser-sdk?rev=5e685c5f86570ec26e668c77417b7b3d5967d1df)",
  "solana-client",
  "solana-entry",
  "solana-sdk",

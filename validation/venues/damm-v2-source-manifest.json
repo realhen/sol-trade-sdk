@@ -1,0 +1,41 @@
+{
+  "repository": "https://github.com/MeteoraAg/cp-amm-sdk",
+  "revision": "37cd9e690d7b5fb6182638a21b86e0e1bf636a7e",
+  "sdk_version": "1.4.10",
+  "license": "MIT",
+  "archive_url": "https://codeload.github.com/MeteoraAg/cp-amm-sdk/tar.gz/37cd9e690d7b5fb6182638a21b86e0e1bf636a7e",
+  "archive_sha256": "b324736424ae38e73d139317a563201fa3142351e7688fe0d8f03fd3f1abcae2",
+  "archive_verification": "All 87 regular archive files byte-compared to reviewed local source on 2026-09-25.",
+  "files": {
+    "LICENSE": "c74e2ec3078823228742dba9f9e9b79ec0fffdb4bcdd79295130cf42b4ed1020",
+    "package.json": "2f648ff471722b70807d5f1e9532c856951c7837e561f6f2b04d3529b9ad2060",
+    "src/idl/cp_amm.json": "ccbe93966accca0693790fd3a35b06ed4ca3758cd4d8675c31df92703b9a974d",
+    "src/constants.ts": "0a07b53dd2f3d28bb5939f16e135374aed2e36d9230fae59ab476b6e45e52457",
+    "src/types.ts": "6a66a82596633ddf649c732ce3cb8b8265e21098f9a5080c0182438617ba7e40",
+    "src/pda.ts": "603c2931fbf4f45174555ecd0f866b1e8a7b0b7b4301bb2b6f368ee4dea3dd25",
+    "src/CpAmm.ts": "4eb3251a86e271b7c6a581d0593ed50e34ce5029d6eeb3562698d1d97c014057",
+    "src/helpers/feeCodec.ts": "e23e2c1b729045d8d95363ba687be3afa4d28c58caeddd4d7f9f0dd90319ec7c",
+    "src/helpers/validation.ts": "7d24ea7d89f9ada7db3e2dcf102f4409d6f4826cba26814e436dd2aba9f169a4",
+    "src/math/feeMath.ts": "1252cf633943a77033e0bbf8d7c5bcc4315ad5add15fc37904f0f4ede71ddbdb",
+    "src/math/utilsMath.ts": "6bfa34dfd66f45da188eb525127e5830a320003e885e6a06d2dd00f8c894ef5d",
+    "src/math/swapQuote.ts": "5902ef6c94dca8325a64b13333f6ea2bbc95a1c2ff298b5ac032abd3afa78777",
+    "src/math/liquidity/liquidityHandler.ts": "72147e3590e9d3258d87ea3208b82d7d16ebc9b8a1f2aa4f983bf837a61d5d21",
+    "src/math/liquidity/concentratedLiquidity.ts": "238f3b84fcc02d34b057d54fadade17a610d9e4c213840cb3dd26e8b763a3941",
+    "src/math/liquidity/compoundingLiquidity.ts": "51b1faf277f6edef7d6d0c5ac410723dca5cd8fd2c5a964b72e680365f752f53",
+    "src/math/poolFees/baseFee/baseFeesHandler.ts": "22c98e9fb2ed431e80c04eb9a5840220466ce079c7ab1913e0e5338ce30a25cd",
+    "src/math/poolFees/baseFee/feeScheduler.ts": "0c2aceb45bd1cd2d2638f3231204ae9dad0774cccbf3612d2a9ac4e16e01fc47",
+    "src/math/poolFees/baseFee/feeTimeScheduler.ts": "7443aec6479dc38533c815fef684dc90c28e644ca30de7bc26e98e473e173944",
+    "src/math/poolFees/baseFee/feeMarketCapScheduler.ts": "a250ba5fb097e92222a9daf4b7e864a0ff0e917a5712ab04f07fa3f1488c84eb",
+    "src/math/poolFees/baseFee/rateLimiter.ts": "ab3607586d4c1dcead19938d20190c0c02a8feac101968349a775d9d3042565f",
+    "src/math/poolFees/dynamicFee.ts": "ff22a7cd206e2bf414a200a1b6dc9443f6f1185314a5aa7fea1e2fc62f4d5758",
+    "src/helpers/utils.ts": "f492a0fdb6b347db7145c9d5c34df36e475e8d0737a3a930d4030d843eb44e61"
+  },
+  "port_destination": "crates/worker/src/market/damm_v2.rs",
+  "boundaries": [
+    "Ported pure exact-input concentrated and compounding integer formulas, base fee scheduler and included-input rate limiter.",
+    "IDL supplied bounded byte offsets, discriminator, instruction account order and mode bytes; PDA seeds ported from pda.ts.",
+    "High-level CpAmm.ts only inspected for instruction schema and optional Instructions sysvar; no provider/client/signing/transport code reused.",
+    "Dynamic fee source inspected to establish missing pre-swap volatility refresh and rejected for execution.",
+    "No code from the separate noncommercial Rust DAMM v2 repository was read or copied."
+  ]
+}

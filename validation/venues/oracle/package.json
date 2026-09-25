@@ -1,0 +1,15 @@
+{
+  "name": "trade-engine-meteora-fixture-oracle",
+  "private": true,
+  "type": "module",
+  "description": "Optional development-only dependencies for exact-source MIT Meteora differential fixtures",
+  "dependencies": {
+    "@coral-xyz/anchor": "0.31.1",
+    "@solana/spl-token": "0.4.14",
+    "@solana/web3.js": "1.98.4",
+    "bn.js": "5.2.2",
+    "decimal.js": "10.6.0",
+    "esbuild": "0.25.10",
+    "invariant": "2.2.4"
+  }
+}
