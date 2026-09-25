@@ -789,22 +789,15 @@ fn decode_pool_account(account: &solana_sdk::account::Account) -> Result<Pool, S
     pool_decode(&account.data[8..]).ok_or_else(|| "Failed to decode pool".to_string())
 }
 
-/// Known allocated Pool account sizes. Current accounts may be serialized to
-/// exactly 261 bytes or retain a larger historical allocation.
-const POOL_DATA_LEN_LEGACY: u64 = 8 + 244;
-const POOL_DATA_LEN_CURRENT: u64 = 8 + 253;
-const POOL_DATA_LEN_PADDED: u64 = 300;
-const POOL_DATA_LEN_EXTENDED: u64 = 643;
-
-/// Run getProgramAccounts with a Memcmp filter, querying known Pool sizes in parallel.
-async fn get_program_accounts_known_sizes(
+/// Discover pools using their discriminator and mint, independently of allocation size.
+/// The returned bytes still pass owner, discriminator and layout validation before use.
+async fn get_program_accounts_for_mint(
     rpc: &SolanaRpcClient,
     memcmp_offset: usize,
     mint: &Pubkey,
 ) -> Result<Vec<(Pubkey, solana_sdk::account::Account)>, anyhow::Error> {
-    let make_config = |data_size: u64| solana_rpc_client_api::config::RpcProgramAccountsConfig {
+    let config = solana_rpc_client_api::config::RpcProgramAccountsConfig {
         filters: Some(vec![
-            solana_rpc_client_api::filter::RpcFilterType::DataSize(data_size),
             solana_rpc_client_api::filter::RpcFilterType::Memcmp(
                 solana_client::rpc_filter::Memcmp::new_base58_encoded(0, &POOL_DISCRIMINATOR),
             ),
@@ -814,44 +807,21 @@ async fn get_program_accounts_known_sizes(
         ]),
         account_config: solana_rpc_client_api::config::RpcAccountInfoConfig {
             encoding: Some(UiAccountEncoding::Base64),
-            data_slice: None,
-            commitment: None,
-            min_context_slot: None,
+            ..Default::default()
         },
-        with_context: None,
-        sort_results: None,
+        ..Default::default()
     };
-    let program_id = accounts::AMM_PROGRAM;
     #[allow(deprecated)]
-    let (legacy_result, current_result, padded_result, extended_result) = tokio::join!(
-        rpc.get_program_ui_accounts_with_config(&program_id, make_config(POOL_DATA_LEN_LEGACY)),
-        rpc.get_program_ui_accounts_with_config(&program_id, make_config(POOL_DATA_LEN_CURRENT)),
-        rpc.get_program_ui_accounts_with_config(&program_id, make_config(POOL_DATA_LEN_PADDED)),
-        rpc.get_program_ui_accounts_with_config(&program_id, make_config(POOL_DATA_LEN_EXTENDED)),
-    );
-    let results = [legacy_result, current_result, padded_result, extended_result];
-    let mut all = Vec::new();
-    let mut errors = Vec::new();
-    for (size, result) in
-        [POOL_DATA_LEN_LEGACY, POOL_DATA_LEN_CURRENT, POOL_DATA_LEN_PADDED, POOL_DATA_LEN_EXTENDED]
-            .into_iter()
-            .zip(results)
-    {
-        match result {
-            Ok(accounts) => {
-                for (pubkey, account) in accounts {
-                    if let Some(account) = account.to_account() {
-                        all.push((pubkey, account));
-                    }
-                }
-            }
-            Err(error) => errors.push(format!("dataSize={size}: {error}")),
-        }
-    }
-    if !errors.is_empty() {
-        return Err(anyhow!("Incomplete PumpSwap pool query: {}", errors.join("; ")));
-    }
-    Ok(all)
+    let accounts = rpc.get_program_ui_accounts_with_config(&accounts::AMM_PROGRAM, config).await?;
+    accounts
+        .into_iter()
+        .map(|(key, account)| {
+            account
+                .to_account()
+                .map(|account| (key, account))
+                .ok_or_else(|| anyhow!("Invalid account encoding for PumpSwap pool {key}"))
+        })
+        .collect()
 }
 
 fn decode_pool_accounts(
@@ -881,7 +851,7 @@ pub async fn find_by_base_mint(
     base_mint: &Pubkey,
 ) -> Result<(Pubkey, Pool), anyhow::Error> {
     // base_mint offset: 8(discriminator) + 1(bump) + 2(index) + 32(creator) = 43
-    let accounts = get_program_accounts_known_sizes(rpc, 43, base_mint).await?;
+    let accounts = get_program_accounts_for_mint(rpc, 43, base_mint).await?;
     if accounts.is_empty() {
         return Err(anyhow!("No pool found for mint {}", base_mint));
     }
@@ -898,7 +868,7 @@ pub async fn find_by_quote_mint(
     quote_mint: &Pubkey,
 ) -> Result<(Pubkey, Pool), anyhow::Error> {
     // quote_mint offset: 8 + 1 + 2 + 32 + 32 = 75
-    let accounts = get_program_accounts_known_sizes(rpc, 75, quote_mint).await?;
+    let accounts = get_program_accounts_for_mint(rpc, 75, quote_mint).await?;
     if accounts.is_empty() {
         return Err(anyhow!("No pool found for mint {}", quote_mint));
     }
@@ -910,29 +880,16 @@ pub async fn find_by_quote_mint(
         .ok_or_else(|| anyhow!("No valid pool decoded for quote_mint {}", quote_mint))
 }
 
-/// 按 mint 查找 PumpSwap 池（本函数仅用于 PumpSwap，其他 DEX 勿用）。
-///
-/// 查找顺序（与 @pump-fun/pump-swap-sdk 一致）：
-/// 1. Pool v2 PDA ["pool-v2", base_mint] — 一次 getAccount
-/// 2. Canonical pool PDA ["pool", 0, pumpPoolAuthority(mint), mint, WSOL] — 迁移后的标准池
-/// 3. getProgramAccounts 按 base_mint / quote_mint 过滤
+/// Finds the canonical WSOL-quoted Pump pool first, then discovers noncanonical
+/// pools by mint. The `pool-v2` auxiliary PDA is not a Pool account and must not
+/// be used as the pool-state address. Fallback selection retains upstream's LP
+/// supply heuristic; it is not a liquidity or executable-price ranking.
 pub async fn find_by_mint(
     rpc: &SolanaRpcClient,
     mint: &Pubkey,
 ) -> Result<(Pubkey, Pool), anyhow::Error> {
     let mut diag = Vec::<String>::new();
 
-    // 1. PumpSwap v2 PDA（seeds: ["pool-v2", base_mint]）
-    if let Some(pool_address) = get_pool_v2_pda(mint) {
-        diag.push(format!("PDA(v2)={}", pool_address));
-        match fetch_pool(rpc, &pool_address).await {
-            Ok(pool) if pool.base_mint == *mint => return Ok((pool_address, pool)),
-            Ok(_) => diag.push("PDA(v2) 账户存在但 base_mint 不匹配".into()),
-            Err(e) => diag.push(format!("PDA(v2) get_account/decode 失败: {}", e)),
-        }
-    }
-
-    // 2. Canonical pool PDA（与 pump-swap-sdk canonicalPumpPoolPda(mint) 一致）
     let canonical_address = get_canonical_pool_pda(mint);
     diag.push(format!("canonical={}", canonical_address));
     match fetch_pool(rpc, &canonical_address).await {
@@ -1215,14 +1172,6 @@ mod tests {
             4_500_000_000_000,
         );
         assert_eq!(fees, PumpSwapFeeBasisPoints::new(20, 5, 75));
-    }
-
-    #[test]
-    fn pumpswap_pool_queries_cover_current_serialized_and_padded_sizes() {
-        assert_eq!(POOL_DATA_LEN_LEGACY, 252);
-        assert_eq!(POOL_DATA_LEN_CURRENT, 261);
-        assert_eq!(POOL_DATA_LEN_PADDED, 300);
-        assert_eq!(POOL_DATA_LEN_EXTENDED, 643);
     }
 
     #[test]

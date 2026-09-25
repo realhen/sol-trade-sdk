@@ -32,54 +32,23 @@ const LEGACY_POOL_FIELDS_SIZE: usize = 1 + 2 + 32 * 6 + 8 + 32 + 1 + 1;
 /// Legacy Pool accounts were allocated with seven trailing padding bytes.
 pub const LEGACY_POOL_SIZE: usize = LEGACY_POOL_FIELDS_SIZE + 7;
 
-#[derive(BorshDeserialize)]
-struct LegacyPool {
-    pool_bump: u8,
-    index: u16,
-    creator: Pubkey,
-    base_mint: Pubkey,
-    quote_mint: Pubkey,
-    lp_mint: Pubkey,
-    pool_base_token_account: Pubkey,
-    pool_quote_token_account: Pubkey,
-    lp_supply: u64,
-    coin_creator: Pubkey,
-    is_mayhem_mode: bool,
-    is_cashback_coin: bool,
-}
-
-impl From<LegacyPool> for Pool {
-    fn from(pool: LegacyPool) -> Self {
-        Self {
-            pool_bump: pool.pool_bump,
-            index: pool.index,
-            creator: pool.creator,
-            base_mint: pool.base_mint,
-            quote_mint: pool.quote_mint,
-            lp_mint: pool.lp_mint,
-            pool_base_token_account: pool.pool_base_token_account,
-            pool_quote_token_account: pool.pool_quote_token_account,
-            lp_supply: pool.lp_supply,
-            coin_creator: pool.coin_creator,
-            is_mayhem_mode: pool.is_mayhem_mode,
-            is_cashback_coin: pool.is_cashback_coin,
-            virtual_quote_reserves: 0,
-        }
-    }
-}
-
+/// Decodes complete historical or current Pool fields, allowing trailing allocation padding.
+/// Rejects partial known fields and nonzero bytes in the legacy reserved tail.
 pub fn pool_decode(data: &[u8]) -> Option<Pool> {
+    let legacy_padding = data.len() == LEGACY_POOL_SIZE
+        && data[LEGACY_POOL_FIELDS_SIZE..].iter().all(|byte| *byte == 0);
+    if data.len() < 263
+        && ![203, 235, 236, 237, 253, 261, 262].contains(&data.len())
+        && !legacy_padding
+    {
+        return None;
+    }
     if data.len() >= POOL_SIZE {
         return borsh::from_slice::<Pool>(&data[..POOL_SIZE]).ok();
     }
-
-    if data.len() == LEGACY_POOL_SIZE {
-        return borsh::from_slice::<LegacyPool>(&data[..LEGACY_POOL_FIELDS_SIZE])
-            .ok()
-            .map(Into::into);
-    }
-
-    None
+    let mut padded = [0u8; POOL_SIZE];
+    padded[..data.len()].copy_from_slice(data);
+    borsh::from_slice::<Pool>(&padded).ok()
 }
 
 /// Compute the quote reserves used by PumpSwap pricing.
