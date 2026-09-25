@@ -6,7 +6,7 @@
 
 # Build artifacts
 /target/
-Cargo.lock
+# Keep the audited fork dependency resolution reproducible.
 .DS_Store
 
 # Proto sources

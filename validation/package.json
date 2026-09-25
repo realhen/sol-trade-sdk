@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "@pump-fun/pump-sdk": "2.0.0",
+    "@pump-fun/pump-swap-sdk": "1.20.0"
+  }
+}
